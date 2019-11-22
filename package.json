@@ -1,0 +1,28 @@
+{
+  "name": "redfor_tracker_linux",
+  "version": "1.0.0",
+  "description": "Tracks red team movement on a linux machine",
+  "main": "./index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node -r esm index.js"
+  },
+  "bin": {
+    "RedforTracker": "./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rafael09ED/RedforTrackerLinux.git"
+  },
+  "author": "Rafael DeJesus",
+  "bugs": {
+    "url": "https://github.com/Rafael09ED/RedforTrackerLinux/issues"
+  },
+  "homepage": "https://github.com/Rafael09ED/RedforTrackerLinux#readme",
+  "dependencies": {
+    "always-tail": "^0.2.0",
+    "chokidar": "^3.3.0",
+    "esm": "^3.2.25",
+    "moment": "^2.24.0"
+  }
+}
