@@ -4,6 +4,7 @@ import loadjson from "../bin/util/loadjson";
 import chokidar from 'chokidar';
 const { resolve } = require("path")
 const { spawn } = require('child_process');
+const colors = require('colors/safe');
 
 
 var watchers = [];
@@ -38,18 +39,18 @@ function watch_file(config){
         const output = evaluate_log_output(data, process_config);
         if (output) {
             if (config.print_header)
-                console.log(`Match from file ${resolve(config.path)}:`);
+                console.log(colors.blue(`Match from file ${resolve(config.path)}:`));
             process.stdout.write(output);
         }
     });
     cmd.stderr.on("data", (data) => {
-        process.stderr.write(data);
+        process.stderr.write(colors.red(data));
     });
     cmd.on("close", (code) => {
-        console.error(`watch for file ${resolve(config.path)} closed all io with ${code}`);
+        console.error(colors.yellow(`watch for file ${resolve(config.path)} closed all io with ${code}`));
     });
     cmd.on("exit", (code) => {
-        console.error(`watch for file ${resolve(config.path)} exited with code ${code}`);
+        console.error(colors.yellow(`watch for file ${resolve(config.path)} exited with code ${code}`));
     });
 
  
@@ -63,23 +64,15 @@ function start(){
     fs.readdir(log_path, function (err, files) {
         if (err) throw err;
         files.forEach(file => {
-            console.log(log_path + file);
             loadjson(log_path + file)
-                .then(config => config.files)
-                .then(configs_to_watch => {
-                    configs_to_watch.forEach(watch_file)
-                });
+                .then(config => {
+                    if (config.disabled) return;
+                    console.log("loading " + log_path + file);
+                    config.files.forEach(watch_file)
+                })
         })
     });
 }
 
-function on_exit(){
-    watchers.forEach(config => {
-        config.process.kill("SIGINT");
-    })
-}
-
-process.on('SIGINT',on_exit);
-process.on('exit',on_exit);
 
 export default start

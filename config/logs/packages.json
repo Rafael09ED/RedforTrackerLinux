@@ -1,0 +1,8 @@
+{
+    "disabled": false,
+    "files": [{
+        "path":"/var/log/apt/history.log",
+        "patterns": ["apt install .+", "apt-get install .+"],
+        "print_header": true
+    }]
+}

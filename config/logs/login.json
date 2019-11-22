@@ -1,0 +1,7 @@
+{
+    "disabled": true,
+    "files": [{
+        "path":"/var/log/auth.log",
+        "print_header": true
+    }]
+}

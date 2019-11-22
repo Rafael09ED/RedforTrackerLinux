@@ -1,4 +1,5 @@
 {
+    "disabled": false,
     "files": [{
         "path":"./test.log",
         "patterns": ["[h|H]ello", "[h|H]i"],
