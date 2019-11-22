@@ -90,8 +90,9 @@ function start(){
             loadjson(log_path + file)
                 .then(config => {
                     if (config.disabled) return;
-                    console.log("loading " + log_path + file);
-                    config.files.forEach(watch_file)
+                    process.stdout.write("loading " + log_path + file + " ...   ");
+                    config.files.forEach(watch_file);
+                    console.log("done");
                 })
         })
     });

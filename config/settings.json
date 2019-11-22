@@ -1,12 +1,12 @@
 {
     "watchers": {
-        "logs_path" : "./config/logs/"
+        "logs_path" : "./config/logs/",
+        "dir_watcher_path": "./config/dir_watcher/"
     },
     "logging": {
         "master":{
             "path" : "./logs/",
             "prefex" : "redfor_tracker_log-"
         }
-
     }
 }
