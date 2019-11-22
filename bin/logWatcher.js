@@ -9,37 +9,35 @@ const colors = require('colors/safe');
 
 var watchers = [];
 
-function evalute_regex(config){
-    if (!config.patterns) return null;
-    return config.patterns.map(regex_string => new RegExp(regex_string));
+function evalute_regex(patterns){
+    if (!patterns) return null;
+    return patterns.map(regex_string => new RegExp(regex_string));
 }
 
-function evaluate_log_output(data, config){
-    if (config.regex == null) return data;
-    for (let regex of config.regex){
+function evaluate_log_output(data, regex_list){
+    if (regex_list == null) return data;
+    for (let regex of regex_list){
         if (regex.exec(data)) return data;
     }
     return null;
 }
 
-function watch_file(config){
-    var cmd
+function initialize_tail(absolute_path, config){
+    var cmd;
     try {
-        cmd = spawn("tail", ["-n0", "-f", resolve(config.path)]);
+        cmd = spawn("tail", ["-n0", "-f", absolute_path]);
     } catch (ex) {
-        console.warn(config.path + " could not be watched");
+        console.warn(absolute_path + " could not be watched");
         return;
     }
-    var process_config = {
-        "process": cmd,
-        "config": config,
-        "regex": evalute_regex(config)
-    };
+    
+    const regex_list = evalute_regex(config.patterns);
+
     cmd.stdout.on("data", (data) => {
-        const output = evaluate_log_output(data, process_config);
+        const output = evaluate_log_output(data, regex_list);
         if (output) {
             if (config.print_header)
-                console.log(colors.blue(`Match from file ${resolve(config.path)}:`));
+                console.log(colors.blue(`Match from file ${absolute_path}:`));
             process.stdout.write(output);
         }
     });
@@ -47,13 +45,38 @@ function watch_file(config){
         process.stderr.write(colors.red(data));
     });
     cmd.on("close", (code) => {
-        console.error(colors.yellow(`watch for file ${resolve(config.path)} closed all io with ${code}`));
+        console.error(colors.yellow(`watch for file ${absolute_path} closed all io with ${code}`));
     });
     cmd.on("exit", (code) => {
-        console.error(colors.yellow(`watch for file ${resolve(config.path)} exited with code ${code}`));
-    });
+        console.error(colors.yellow(`watch for file ${absolute_path} exited with code ${code}`));
+    }); 
 
- 
+    return cmd;
+}
+
+function watch_file(config){
+    const index = watchers.length;
+    const path = resolve(config.path);
+
+    const watcher = chokidar.watch(path, {
+        persistent: true,
+        ignoreInitial: true
+    });
+    watcher
+        .on('add', path => {
+            console.log(colors.yellow(`File ${path} was created!`));
+            watchers[index].process.kill(2);
+            watchers[index].process = initialize_tail(path, config);
+        })
+        .on('unlink', path => console.log(colors.red(`File ${path} was deleted!`)));
+
+    var process_config = {
+        "path": path,
+        "process": initialize_tail(path, config),
+        "watcher": watcher,
+        "config": config,
+    };
+
     watchers.push(process_config);
 }
 

@@ -1,0 +1,8 @@
+{
+    "disabled": false,
+    "files": [{
+        "path":"/home/rafael/.bash_history",
+        "patterns": ["sudo"],
+        "print_header": true
+    }]
+}
