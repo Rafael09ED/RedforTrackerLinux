@@ -2,21 +2,34 @@ import settings from '../config/settings.json';
 import fs from 'fs';
 import loadjson from "../bin/util/loadjson";
 import chokidar from 'chokidar';
-import Tail from 'always-tail';
+const {resolve} = require("path")
+const { spawn } = require('child_process');
+
 
 var watchers = [];
 
 function watch_file(config){
-    console.log(config)
-    var tail = new Tail(config.path)
-    tail.on("line", function(data) {
-        console.log(data);
+    var cmd
+    try {
+        cmd = spawn("tail", ["-n0", "-f", resolve(config.path)]);
+    } catch (ex) {
+        console.warn(config.path + " could not be watched");
+        return;
+    }
+    cmd.stdout.on("data", function(data) {
+        process.stdout.write(data);
     });
-    tail.on("error", function(error) {
-        console.log('ERROR: ', error);
+    cmd.stderr.on("data", function(data) {
+        process.stderr.write(data);
+    });
+    cmd.on("close", function(code) {
+        console.error(`watch for file ${resolve(config.path)} closed all io with ${code}`);
+    });
+    cmd.on("exit", function(code) {
+        console.error(`watch for file ${resolve(config.path)} exited with code ${code}`);
     });
     watchers.push({
-        "tailer": tail,
+        "process": cmd,
         "config": config
     })
 }
@@ -37,5 +50,14 @@ function start(){
         })
     });
 }
+
+function on_exit(){
+    watchers.forEach(config => {
+        config.process.kill("SIGINT");
+    })
+}
+
+process.on('SIGINT',on_exit);
+process.on('exit',on_exit);
 
 export default start
