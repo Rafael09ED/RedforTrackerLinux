@@ -2,11 +2,24 @@ import settings from '../config/settings.json';
 import fs from 'fs';
 import loadjson from "../bin/util/loadjson";
 import chokidar from 'chokidar';
-const {resolve} = require("path")
+const { resolve } = require("path")
 const { spawn } = require('child_process');
 
 
 var watchers = [];
+
+function evalute_regex(config){
+    if (!config.patterns) return null;
+    return config.patterns.map(regex_string => new RegExp(regex_string));
+}
+
+function evaluate_log_output(data, config){
+    if (config.regex == null) return data;
+    for (let regex of config.regex){
+        if (regex.exec(data)) return data;
+    }
+    return null;
+}
 
 function watch_file(config){
     var cmd
@@ -16,22 +29,31 @@ function watch_file(config){
         console.warn(config.path + " could not be watched");
         return;
     }
-    cmd.stdout.on("data", function(data) {
-        process.stdout.write(data);
+    var process_config = {
+        "process": cmd,
+        "config": config,
+        "regex": evalute_regex(config)
+    };
+    cmd.stdout.on("data", (data) => {
+        const output = evaluate_log_output(data, process_config);
+        if (output) {
+            if (config.print_header)
+                console.log(`Match from file ${resolve(config.path)}:`);
+            process.stdout.write(output);
+        }
     });
-    cmd.stderr.on("data", function(data) {
+    cmd.stderr.on("data", (data) => {
         process.stderr.write(data);
     });
-    cmd.on("close", function(code) {
+    cmd.on("close", (code) => {
         console.error(`watch for file ${resolve(config.path)} closed all io with ${code}`);
     });
-    cmd.on("exit", function(code) {
+    cmd.on("exit", (code) => {
         console.error(`watch for file ${resolve(config.path)} exited with code ${code}`);
     });
-    watchers.push({
-        "process": cmd,
-        "config": config
-    })
+
+ 
+    watchers.push(process_config);
 }
 
 function start(){

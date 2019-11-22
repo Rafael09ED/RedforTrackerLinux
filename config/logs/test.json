@@ -1,5 +1,7 @@
 {
     "files": [{
-        "path":"./test.log"
+        "path":"./test.log",
+        "patterns": ["[h|H]ello", "[h|H]i"],
+        "print_header": true
     }]
 }
