@@ -1,10 +1,12 @@
 import chokidar from 'chokidar';
 import loadjson from "../bin/util/loadjson";
 import settings from '../config/settings.json';
-const { resolve } = require("path")
+const { resolve } = require("path");
 import fs from 'fs';
 const colors = require('colors/safe');
-
+const { spawn } = require('child_process');
+import moment from 'moment';
+const Path = require('path'); 
 
 var watchers = [];
 
@@ -14,6 +16,18 @@ function watch_dir(config){
     if (config.path.charAt(config.path.length - 1) == '/')
         path = path + '/';
         
+    // backup
+    const backup_name = `${Path.basename(path)}-${moment().format("YYYY-mm-dd_HH-MM-SS")}.tar.gz`;
+    const backup_path = resolve(settings.backup.path + backup_name);
+    
+    const cmd = spawn("tar", ["cfz", backup_path, path]);
+    cmd.on("exit", (code) => {
+        if (!code)
+            console.log(colors.green(`Archived ${path} into ${backup_name}`));
+        else
+            console.error(colors.red(`Error backing up ${path}`));
+    }); 
+    
     const watcher = chokidar.watch(path, {
         persistent: true,
         ignoreInitial: true

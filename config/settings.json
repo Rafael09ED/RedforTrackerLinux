@@ -8,5 +8,11 @@
             "path" : "./logs/",
             "prefex" : "redfor_tracker_log-"
         }
+    },
+    "backup":{
+        "path": "./backups/"
+    },
+    "logs":{
+        "path":"./logs/"
     }
 }

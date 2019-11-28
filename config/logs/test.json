@@ -4,5 +4,9 @@
         "path":"./test.log",
         "patterns": ["[h|H]ello", "[h|H]i"],
         "print_header": true
+    },{
+        "path":"/home/rafael/testdir/test.log",
+        "patterns": ["[h|H]ello", "[h|H]i"],
+        "print_header": true
     }]
 }

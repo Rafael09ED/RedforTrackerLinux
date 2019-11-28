@@ -1,0 +1,36 @@
+Starting Log Watcher....
+Starting Dir Watcher....
+loading ./config/logs/bash_history.json ...     _____          _   _______                   
+ |  __ \        | | |__   __|                  
+ | |__) |___  __| |    | | ___  __ _ _ __ ___  
+ |  _  // _ \/ _` |    | |/ _ \/ _` | '_ ` _ \ 
+ | | \ \  __/ (_| |    | |  __/ (_| | | | | | |
+ |_|__\_\___|\__,_|   _|_|\___|\__,_|_| |_| |_|
+ |__   __|           | |                       
+    | |_ __ __ _  ___| | _____ _ __            
+    | | '__/ _` |/ __| |/ / _ \ '__|           
+    | | | | (_| | (__|   <  __/ |              
+    |_|_|  \__,_|\___|_|\_\___|_|              
+                                               
+                                               
+done
+loading ./config/logs/packages.json ...   done
+loading ./config/dir_watcher/django_project.json ...   watching /mnt/c/Users/starm/Documents/classes/cpsc4910/F19-Team05-DeJesus-Stephens-Murray-Howard/backend/driver_rewards/
+done
+loading ./config/dir_watcher/test.json ...   watching /mnt/c/Users/starm/Documents/GitHub/RedforTrackerLinux/test/
+done
+watching /home/rafael/testdir/dir/
+loading ./config/logs/test.json ...   done
+[32mArchived /mnt/c/Users/starm/Documents/GitHub/RedforTrackerLinux/test/ into test-2019-58-Fr_10-11-86.tar.gz[39m
+[32mArchived /home/rafael/testdir/dir/ into dir-2019-58-Fr_10-11-88.tar.gz[39m
+[32mArchived /mnt/c/Users/starm/Documents/classes/cpsc4910/F19-Team05-DeJesus-Stephens-Murray-Howard/backend/driver_rewards/ into driver_rewards-2019-58-Fr_10-11-85.tar.gz[39m
+Hello
+[34mMatch from file /home/rafael/testdir/test.log:[39m
+[34mMatch from file /home/rafael/testdir/test.log:[39m
+Hi
+[34mMatch from file /home/rafael/testdir/test.log:[39m
+Hi
+[33mFile /home/rafael/testdir/dir/test2.txt was created![39m
+[31mFile /home/rafael/testdir/dir/important_file.txt was deleted![39m
+[32mArchive dir-2019-58-Fr_10-11-88.tar.gz restored![39m
+[33mFile /home/rafael/testdir/dir/important_file.txt was created![39m

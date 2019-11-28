@@ -42,7 +42,7 @@ function initialize_tail(absolute_path, config){
         }
     });
     cmd.stderr.on("data", (data) => {
-        process.stderr.write(colors.red(data));
+        process.stderr.write(data);
     });
     cmd.on("close", (code) => {
         console.error(colors.yellow(`watch for file ${absolute_path} closed all io with ${code}`));

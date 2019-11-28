@@ -1,24 +1,33 @@
-import settings from './config/settings.json';
+import settings from '../config/settings.json';
 import moment from 'moment';
+import fs from 'fs';
 
-var cl = console.log
+
+var write = process.stdout.write;
+var error = process.stderr.write;
+
 var setPath = null;
 
 function getNowPath() {
-    return settings.logging.master.prefex + moment().format("YYYY-mm-dd_HH-MM-SS")
+    return settings.logging.master.prefex + moment().format("YYYY-mm-dd_HH-MM-SS");
 }
 
 function getDefaultPath() {
     if (!setPath) 
-        setPath = getNowPath()
+        setPath = getNowPath();
     return setPath;
 }
 
 function logConsoleToFile(path=getDefaultPath()){
-    console.log = function(...args){
-        
-        cl.apply(console, args);
+    process.stdout.write = function(...args){
+        fs.appendFile(settings.logs.path + getDefaultPath(), args[0], (error) => {});
+        write.apply(process.stdout, args);
+    }
+    process.stderr.write = function(...args){
+        fs.appendFile(settings.logs.path + getDefaultPath(), args[0], (error) => {});
+        write.apply(process.stderr, args);
     }
 }
 
-export { logConsoleToFile, getDefaultPath }
+export default logConsoleToFile;
+export { getDefaultPath }
